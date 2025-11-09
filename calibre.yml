@@ -1,0 +1,19 @@
+# E-knihovna
+# https://calibre-ebook.com/
+
+version: '3.8'
+services:
+  calibre-web:
+    image: lscr.io/linuxserver/calibre-web:latest
+    container_name: calibre-web
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Prague
+      - DOCKER_MODS=linuxserver/mods:universal-calibre
+    volumes:
+      - ./calibre-data:/config
+      - ./knihovna:/books
+    ports:
+      - "8083:8083"
+    restart: unless-stopped
