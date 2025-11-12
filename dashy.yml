@@ -6,7 +6,7 @@ services:
     image: lissy93/dashy:latest
     container_name: dashy
     ports:
-      - "8080:80"          # přístup na http://localhost:8080
+      - "8080:8080"          # přístup na http://localhost:8080
     volumes:
       - ./conf.yml:/app/public/conf.yml   # vlastní konfigurace dashboardu
       - dashy_data:/data                  # ukládání persistentních dat
