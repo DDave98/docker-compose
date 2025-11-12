@@ -1,0 +1,94 @@
+version: "3.8"
+# správa IT prostředí a mapování síťové infrastruktury
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: netbox_postgres
+    environment:
+      POSTGRES_USER: netbox
+      POSTGRES_PASSWORD: netbox
+      POSTGRES_DB: netbox
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: netbox_redis
+    restart: unless-stopped
+
+  netbox:
+    image: netboxcommunity/netbox:latest
+    container_name: netbox
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - ALLOWED_HOSTS=*
+      - DB_NAME=netbox
+      - DB_USER=netbox
+      - DB_PASSWORD=netbox
+      - DB_HOST=postgres
+      - REDIS_HOST=redis
+      - SECRET_KEY=supersecretkey
+      - SUPERUSER_NAME=admin
+      - SUPERUSER_EMAIL=admin@example.com
+      - SUPERUSER_PASSWORD=admin
+      - NAPALM_USERNAME=netbox
+      - NAPALM_PASSWORD=netbox
+      - WEBHOOKS_ENABLED=true
+      - MAINTENANCE_MODE=false
+    ports:
+      - "8000:8080"  # host_port:container_port
+    volumes:
+      - netbox_media:/opt/netbox/netbox/media
+      - netbox_reports:/opt/netbox/netbox/reports
+      - netbox_scripts:/opt/netbox/netbox/scripts
+    restart: unless-stopped
+
+  netbox-worker:
+    image: netboxcommunity/netbox:latest
+    container_name: netbox_worker
+    depends_on:
+      - netbox
+      - redis
+    command: "python3 /opt/netbox/netbox/manage.py rqworker"
+    environment:
+      - DB_NAME=netbox
+      - DB_USER=netbox
+      - DB_PASSWORD=netbox
+      - DB_HOST=postgres
+      - REDIS_HOST=redis
+      - SECRET_KEY=supersecretkey
+    volumes:
+      - netbox_media:/opt/netbox/netbox/media
+      - netbox_reports:/opt/netbox/netbox/reports
+      - netbox_scripts:/opt/netbox/netbox/scripts
+    restart: unless-stopped
+
+  netbox-housekeeping:
+    image: netboxcommunity/netbox:latest
+    container_name: netbox_housekeeping
+    depends_on:
+      - netbox
+      - redis
+    command: "python3 /opt/netbox/netbox/manage.py housekeeping"
+    environment:
+      - DB_NAME=netbox
+      - DB_USER=netbox
+      - DB_PASSWORD=netbox
+      - DB_HOST=postgres
+      - REDIS_HOST=redis
+      - SECRET_KEY=supersecretkey
+    volumes:
+      - netbox_media:/opt/netbox/netbox/media
+      - netbox_reports:/opt/netbox/netbox/reports
+      - netbox_scripts:/opt/netbox/netbox/scripts
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  netbox_media:
+  netbox_reports:
+  netbox_scripts:
