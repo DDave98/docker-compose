@@ -1,0 +1,20 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama:/root/.ollama
+    deploy:
+      resources:
+        limits:
+          memory: 16G
+
+volumes:
+  ollama:
+
+# jak spustit model:
+# docker exec -it ollama ollama pull llama3.1:8b
+# docker exec -it ollama ollama run llama3.1:8b
