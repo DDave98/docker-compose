@@ -4,7 +4,8 @@ appConfig:
     enableGuestAccess: false
     users:
       - user: admin
-        hash: $2b$10$PASTE_BCRYPT_HASH_TADY
+        hash: SHA-256_hash
+        role: admin
 
 pageInfo:
   title: Dashboard
