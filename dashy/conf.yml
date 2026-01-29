@@ -1,0 +1,11 @@
+appConfig:
+  title: Moje Dashy
+  auth:
+    enableGuestAccess: false
+    users:
+      - user: admin
+        hash: $2b$10$PASTE_BCRYPT_HASH_TADY
+
+pageInfo:
+  title: Dashboard
+  description: Soukromý dashboard
