@@ -1,0 +1,54 @@
+# upravený yml pro chod přes proxy
+
+services:
+  guacd:
+    image: guacamole/guacd:latest
+    container_name: guacd
+    restart: unless-stopped
+    networks:
+      - proxy
+
+  mariadb:
+    image: mariadb:10.11
+    container_name: guacamole-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: guacamole_db
+      MYSQL_USER: guacamole
+      MYSQL_PASSWORD: guacamolepassword
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./initdb.sql:/docker-entrypoint-initdb.d/initdb.sql
+    networks:
+      - proxy
+
+  guacamole:
+    image: guacamole/guacamole:latest
+    container_name: guacamole
+    restart: unless-stopped
+    depends_on:
+      - guacd
+      - mariadb
+    environment:
+      GUACD_HOSTNAME: guacd
+      MYSQL_HOSTNAME: mariadb
+      MYSQL_DATABASE: guacamole_db
+      MYSQL_USER: guacamole
+      MYSQL_PASSWORD: guacamolepassword
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.guacamole.rule=Host(`guacamole.tvojadomena.cz`)"
+      - "traefik.http.routers.guacamole.entrypoints=https"
+      - "traefik.http.routers.guacamole.tls=true"
+      - "traefik.http.routers.guacamole.tls.certresolver=letsencrypt"
+      - "traefik.http.services.guacamole.loadbalancer.server.port=8080"
+
+volumes:
+  db-data:
+
+networks:
+  proxy:
+    external: true
