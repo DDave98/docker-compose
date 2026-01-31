@@ -1,0 +1,15 @@
+# audio knihovna pro knihy a podkásty
+
+services:
+  audioshelf:
+    image: ghcr.io/advplyr/audioshelf:latest
+    container_name: audioshelf
+    user: 1000:1000
+    ports:
+      - "13378:80"
+    volumes:
+      - /data/audioshelf/config:/config
+      - /data/audioshelf/metadata:/metadata
+      - /data/audioshelf/audiobooks:/audiobooks
+      - /data/audioshelf/podcasts:/podcasts
+    restart: unless-stopped
