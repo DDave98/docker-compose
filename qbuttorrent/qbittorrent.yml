@@ -1,0 +1,19 @@
+# torrent clinet pro stahování dat
+
+services:
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Prague
+      - WEBUI_PORT=8080
+    volumes:
+      - /data/qbittorrent/config:/config
+      - /data/downloads:/downloads
+    ports:
+      - "8080:8080"
+      - "6881:6881"
+      - "6881:6881/udp"
+    restart: unless-stopped
