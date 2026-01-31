@@ -38,3 +38,10 @@ Incomplete torrents:
 V Settings → Web UI:
 změň heslo
 případně omez přístup (LAN only / auth)
+
+# 🧠 Tipy do homelabu
+- 📚 /downloads/books → Kavita / AudioShelf
+- 🎬 /downloads/movies → Jellyfin
+- 📺 /downloads/series → Jellyfin
+- 🔒 dej to za VPN nebo reverse proxy
+- 🧊 můžeš dát read-only mounty do media serverů
