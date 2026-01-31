@@ -1,0 +1,28 @@
+api:
+  dashboard: true
+  insecure: false
+
+entryPoints:
+  http:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: https
+          scheme: https
+
+  https:
+    address: ":443"
+
+providers:
+  docker:
+    exposedByDefault: false
+    network: proxy
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: tvuj@email.cz
+      storage: acme.json
+      httpChallenge:
+        entryPoint: http
