@@ -1,0 +1,17 @@
+services:
+  mariadb:
+    image: mariadb:10.11
+    container_name: ptero-mariadb
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: CHANGE_ROOT_PASS
+      MYSQL_DATABASE: pterodactyl
+      MYSQL_USER: ptero
+      MYSQL_PASSWORD: CHANGE_DB_PASS
+    volumes:
+      - ./volumes/mariadb:/var/lib/mysql
+
+  redis:
+    image: redis:alpine
+    container_name: ptero-redis
+    restart: unless-stopped
