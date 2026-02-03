@@ -1,26 +1,43 @@
 services:
   panel:
     image: ghcr.io/pterodactyl/panel:latest
-    container_name: pterodactyl-panel
+    container_name: ptero-panel
     restart: unless-stopped
     ports:
       - "80:80"
     environment:
       APP_URL: http://IP_LXC
       APP_TIMEZONE: Europe/Prague
+
       DB_HOST: mariadb
+      DB_PORT: 3306
       DB_DATABASE: pterodactyl
       DB_USERNAME: ptero
-      DB_PASSWORD: STRONG_DB_PASS
+      DB_PASSWORD: CHANGE_DB_PASS
+
       REDIS_HOST: redis
       CACHE_DRIVER: redis
       SESSION_DRIVER: redis
       QUEUE_DRIVER: redis
     volumes:
-      - panel_data:/app/var
+      - ./volumes/panel:/app/var
     depends_on:
       - mariadb
       - redis
 
-volumes:
-  panel_data:
+  mariadb:
+    image: mariadb:10.11
+    container_name: ptero-mariadb
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: CHANGE_ROOT_PASS
+      MYSQL_DATABASE: pterodactyl
+      MYSQL_USER: ptero
+      MYSQL_PASSWORD: CHANGE_DB_PASS
+    volumes:
+      - ./volumes/mariadb:/var/lib/mysql
+
+  redis:
+    image: redis:alpine
+    container_name: ptero-redis
+    restart: unless-stopped
