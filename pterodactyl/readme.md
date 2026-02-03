@@ -6,3 +6,8 @@
 └── volumes/
     ├── mariadb/
     └── panel/
+
+# Postup pro instalaci
+1. stáhnout složku
+2. nastavit oprávnění: chmod +x /pterodactyl/install.sh
+3. spustit skript install.sh
