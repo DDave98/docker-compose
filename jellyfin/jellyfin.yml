@@ -4,13 +4,21 @@ services:
   jellyfin:
     image: jellyfin/jellyfin:latest
     container_name: jellyfin
+    restart: unless-stopped
     user: 1000:1000
+    network_mode: bridge
     ports:
-      - "8096:8096"
+      - "8096:8096"       # HTTP
+      #- "8920:8920"       # HTTPS (volitelné, pokud máš certifikát)
     volumes:
       - /data/jellyfin/config:/config
       - /data/jellyfin/cache:/cache
       - /data/media/movies:/media/movies
       - /data/media/series:/media/series
       - /data/media/music:/media/music
-    restart: unless-stopped
+    environment:
+      - TZ=Europe/Prague
+      - JELLYFIN_PublishedServerUrl=http://192.168.1.40:8096  # nahraď svou IP
+    volumes:
+      - ./config:/config        # konfigurace a metadata
+      - ./media:/media          # složka s filmy/seriály
