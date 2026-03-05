@@ -1,42 +1,41 @@
-services:
-  moodleapp:
-    build:
-      context: .
-    image: moodleapp:1.0
-    container_name: moodleapp
-    ports:
-      - 80:80
-    volumes:
-      - moodledata:/var/www/moodledata
-    depends_on:
-      - moodledb
-  # MySQL DB Service
-  moodledb:
-    image: mysql:8.0.36
-    container_name: clouddb
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    volumes:
-      - clouddbdata:/var/lib/mysql
+version: "3.9"
 
-  # phpmyadmin to Manage MySQL DB
-  phpmyadmin:
-    image: phpmyadmin
-    container_name: phpmyadmin
-    restart: always
-    ports:
-      - "8081:80"
+services:
+  mariadb:
+    image: mariadb:11.4
+    container_name: moodle-db
+    restart: unless-stopped
     environment:
-      PMA_HOST: clouddb
-      PMA_PORT: 3306
-      PMA_USER: ${MYSQL_USER}
-      PMA_PASSWORD: ${MYSQL_PASSWORD}
+      MARIADB_ROOT_PASSWORD: superrootpass
+      MARIADB_DATABASE: moodle
+      MARIADB_USER: moodle
+      MARIADB_PASSWORD: moodlepass
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - moodle-net
+
+  moodle:
+    image: moodlehq/moodle-php-apache:8.2
+    container_name: moodle
+    restart: unless-stopped
     depends_on:
-      - moodledb
+      - mariadb
+    ports:
+      - "8080:80"
+    volumes:
+      - ./moodle-code:/var/www/html      # připojíme kód Moodle
+      - moodle_data:/var/www/moodledata
+    networks:
+      - moodle-net
+      - proxy   # tvoje existující síť
 
 volumes:
-  clouddbdata:
-  moodledata:
+  mariadb_data:
+  moodle_data:
+
+networks:
+  moodle-net:
+    driver: bridge
+  proxy:
+    external: true
