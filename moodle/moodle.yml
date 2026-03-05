@@ -1,6 +1,7 @@
 version: "3.9"
 
 services:
+
   mariadb:
     image: mariadb:11.4
     container_name: moodle-db
@@ -16,7 +17,7 @@ services:
       - moodle-net
 
   moodle:
-    image: moodlehq/moodle-php-apache:8.2
+    image: moodlehq/moodle-php-apache:8.3
     container_name: moodle
     restart: unless-stopped
     depends_on:
@@ -24,11 +25,36 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ./moodle-code:/var/www/html      # připojíme kód Moodle
+      - ./moodle-code:/var/www/html
+      - moodle_data:/var/www/moodledata
+    environment:
+      MOODLE_DOCKER_PHPUNIT: 0
+    networks:
+      - moodle-net
+      - proxy
+    command: >
+      bash -c "
+        if [ ! -d vendor ]; then
+          php -r 'copy(\"https://getcomposer.org/installer\", \"composer-setup.php\");' && \
+          php composer-setup.php && \
+          php -r 'unlink(\"composer-setup.php\");' && \
+          php composer.phar install --no-dev --classmap-authoritative;
+        fi && apache2-foreground
+      "
+
+  cron:
+    image: moodlehq/moodle-php-apache:8.3
+    container_name: moodle-cron
+    restart: unless-stopped
+    depends_on:
+      - moodle
+    volumes:
+      - ./moodle-code:/var/www/html
       - moodle_data:/var/www/moodledata
     networks:
       - moodle-net
-      - proxy   # tvoje existující síť
+    entrypoint: >
+      bash -c "while true; do php /var/www/html/admin/cli/cron.php; sleep 60; done"
 
 volumes:
   mariadb_data:
