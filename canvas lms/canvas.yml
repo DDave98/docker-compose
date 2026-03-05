@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+
+  canvas:
+    image: instructure/canvas-lms
+    ports:
+      - "3000:80"
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      DATABASE_URL: postgres://canvas:canvas@postgres/canvas
+      REDIS_URL: redis://redis:6379
+    networks:
+      - canvas
+
+  postgres:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: canvas
+      POSTGRES_USER: canvas
+      POSTGRES_PASSWORD: canvas
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - canvas
+
+  redis:
+    image: redis:7
+    networks:
+      - canvas
+
+volumes:
+  pgdata:
+
+networks:
+  canvas:
