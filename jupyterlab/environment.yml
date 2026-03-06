@@ -12,6 +12,7 @@ dependencies:
   - ipykernel
   - ipywidgets
   - nb_conda_kernels
+  - jupyterlab-git
 
   # data science
   - numpy
