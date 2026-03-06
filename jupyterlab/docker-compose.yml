@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+
+  jupyter:
+    build: .
+    container_name: jupyter-lab
+
+    ports:
+      - "8888:8888"
+
+    volumes:
+      - ./notebooks:/home/jovyan/work/notebooks
+      - ./data:/home/jovyan/work/data
+      - ./projects:/home/jovyan/work/projects
+
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+
+    restart: unless-stopped
