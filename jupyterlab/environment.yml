@@ -1,0 +1,55 @@
+name: jupyter-env
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.11
+
+  # Jupyter
+  - jupyterlab
+  - notebook
+  - ipykernel
+  - ipywidgets
+  - nb_conda_kernels
+
+  # data science
+  - numpy
+  - pandas
+  - scipy
+  - matplotlib
+  - seaborn
+  - scikit-learn
+  - statsmodels
+
+  # vizualizace
+  - plotly
+  - bokeh
+  - altair
+
+  # modern data tools
+  - polars
+  - duckdb
+  - pyarrow
+
+  # soubory
+  - openpyxl
+  - xlrd
+  - fastparquet
+
+  # web
+  - requests
+  - httpx
+
+  # utils
+  - tqdm
+  - python-dotenv
+  - pyyaml
+
+  - pip
+
+  - pip:
+      - rich
+      - loguru
+      - icecream
+      - jupyterlab-code-formatter
