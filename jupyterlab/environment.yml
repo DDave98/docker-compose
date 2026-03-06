@@ -32,7 +32,13 @@ dependencies:
   - duckdb
   - pyarrow
 
-  # soubory
+  # ML frameworks
+  - pytorch
+  - torchvision
+  - torchaudio
+  - tensorflow
+
+  # files
   - openpyxl
   - xlrd
   - fastparquet
@@ -52,4 +58,5 @@ dependencies:
       - rich
       - loguru
       - icecream
+      - rise
       - jupyterlab-code-formatter
