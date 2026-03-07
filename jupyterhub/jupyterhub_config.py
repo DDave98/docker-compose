@@ -1,22 +1,16 @@
-import os
-from dockerspawner import DockerSpawner
-
 c = get_config()
 
-c.JupyterHub.spawner_class = DockerSpawner
+c.JupyterHub.bind_url = "http://0.0.0.0:8000"
 
-c.DockerSpawner.image = os.environ["DOCKER_JUPYTER_IMAGE"]
-
-c.DockerSpawner.network_name = os.environ["DOCKER_NETWORK_NAME"]
-
-c.DockerSpawner.notebook_dir = "/home/jovyan/work"
-
-c.JupyterHub.hub_ip = "0.0.0.0"
-c.JupyterHub.hub_port = 8000
-
-# jednoduchý login pro výuku
+# jednoduchá autentizace pro výuku
 c.JupyterHub.authenticator_class = "jupyterhub.auth.DummyAuthenticator"
-
 c.DummyAuthenticator.password = "student"
 
+# admin
 c.Authenticator.admin_users = {"teacher"}
+
+# spawner
+c.JupyterHub.spawner_class = "simple"
+
+# notebook
+c.Spawner.default_url = "/lab"
