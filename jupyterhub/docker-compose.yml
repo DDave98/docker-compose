@@ -2,15 +2,23 @@ version: "3"
 
 services:
   jupyterhub:
-    image: jupyterhub/jupyterhub
+    build: .
     container_name: jupyterhub
+    restart: unless-stopped
     ports:
-      - "8777:8000"
-
+      - "8000:8000"
     volumes:
-      - ./jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py
-      - ./users.txt:/srv/jupyterhub/users.txt
-      - ./shared:/srv/shared
+      - ./jupyterhub:/srv/jupyterhub
       - /var/run/docker.sock:/var/run/docker.sock
+      - jupyterhub-data:/data
+    environment:
+      DOCKER_JUPYTER_IMAGE: course-notebook
+      DOCKER_NETWORK_NAME: jupyterhub-network
+    networks:
+      - jupyterhub-network
 
-    command: jupyterhub
+volumes:
+  jupyterhub-data:
+
+networks:
+  jupyterhub-network:
