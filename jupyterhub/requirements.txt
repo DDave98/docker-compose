@@ -1,0 +1,7 @@
+jupyterlab-git
+ipywidgets
+rise
+jupyterlab-code-formatter
+nbstripout
+rich
+loguru
