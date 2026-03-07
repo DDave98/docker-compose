@@ -1,27 +1,18 @@
+FROM jupyterhub/jupyterhub:4.0
+
+RUN pip install dockerspawner
+
+# user notebook image
 FROM jupyter/minimal-notebook:python-3.11
 
 USER root
 
-RUN apt-get update && apt-get install -y \
-    git \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y git
 
 USER jovyan
 
-RUN pip install \
-    ipywidgets \
-    rise \
-    jupyterlab-git \
-    nbgrader \
-    black \
-    flake8 \
-    jupyterlab-code-formatter
+COPY requirements.txt /tmp/
 
-# aktivace widgetů
-RUN jupyter nbextension enable --py widgetsnbextension
+RUN pip install -r /tmp/requirements.txt
 
-# formatter integrace
 RUN jupyter server extension enable --py jupyterlab_code_formatter
-
-# black formatter
-RUN pip install black
