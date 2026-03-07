@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  jupyterhub:
+    image: jupyterhub/jupyterhub
+    container_name: jupyterhub
+    ports:
+      - "8777:8000"
+
+    volumes:
+      - ./jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py
+      - ./users.txt:/srv/jupyterhub/users.txt
+      - ./shared:/srv/shared
+      - /var/run/docker.sock:/var/run/docker.sock
+
+    command: jupyterhub
