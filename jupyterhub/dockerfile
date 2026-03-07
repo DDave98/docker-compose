@@ -1,0 +1,14 @@
+FROM jupyter/minimal-notebook:python-3.11
+
+USER root
+
+RUN apt-get update && apt-get install -y git
+
+USER jovyan
+
+COPY requirements.txt /tmp/requirements.txt
+
+RUN pip install -r /tmp/requirements.txt
+
+# aktivace widgetů
+RUN jupyter nbextension enable --py widgetsnbextension
