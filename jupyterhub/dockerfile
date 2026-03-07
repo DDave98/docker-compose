@@ -1,18 +1,11 @@
 FROM jupyterhub/jupyterhub:4.0
 
-RUN pip install dockerspawner
-
-# user notebook image
-FROM jupyter/minimal-notebook:python-3.11
-
 USER root
 
 RUN apt-get update && apt-get install -y git
 
+COPY requirements.txt /tmp/requirements.txt
+
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
+
 USER jovyan
-
-COPY requirements.txt /tmp/
-
-RUN pip install -r /tmp/requirements.txt
-
-RUN jupyter server extension enable --py jupyterlab_code_formatter
