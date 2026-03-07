@@ -1,20 +1,22 @@
-from jupyterhub.auth import DummyAuthenticator
+import os
 from dockerspawner import DockerSpawner
 
 c = get_config()
 
-# jednoduché přihlašování
-c.JupyterHub.authenticator_class = DummyAuthenticator
-c.DummyAuthenticator.password = "student"
-
-# každý student dostane vlastní container
 c.JupyterHub.spawner_class = DockerSpawner
 
-c.DockerSpawner.image = "jupyter/minimal-notebook:python-3.11"
+c.DockerSpawner.image = os.environ["DOCKER_JUPYTER_IMAGE"]
 
-c.DockerSpawner.volumes = {
-    "jupyterhub-user-{username}": "/home/jovyan/work",
-    "/srv/shared": "/home/jovyan/shared"
-}
+c.DockerSpawner.network_name = os.environ["DOCKER_NETWORK_NAME"]
 
-c.JupyterHub.bind_url = "http://0.0.0.0:8000"
+c.DockerSpawner.notebook_dir = "/home/jovyan/work"
+
+c.JupyterHub.hub_ip = "0.0.0.0"
+c.JupyterHub.hub_port = 8000
+
+# jednoduchý login pro výuku
+c.JupyterHub.authenticator_class = "jupyterhub.auth.DummyAuthenticator"
+
+c.DummyAuthenticator.password = "student"
+
+c.Authenticator.admin_users = {"teacher"}
