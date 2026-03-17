@@ -23,16 +23,9 @@ services:
     ports:
       - "8000:8000"
     environment:
-      PAPERLESS_REDIS: redis://broker:6379
-      PAPERLESS_DBHOST: db
-      PAPERLESS_DBUSER: paperless
-      PAPERLESS_DBPASS: paperless
-      PAPERLESS_DBNAME: paperless
-      PAPERLESS_TIME_ZONE: Europe/Prague
-      PAPERLESS_URL: https://paperless.ssipf-sys.eu
-      PAPERLESS_TRUSTED_PROXIES: 0.0.0.0/0
-      PAPERLESS_CSRF_TRUSTED_ORIGINS: https://paperless.domena.cz/
-      PAPERLESS_ALLOWED_HOSTS: paperless.domena.cz
+      PAPERLESS: ahoj
+    env_file:
+      - compose.env
     volumes:
       - data:/usr/src/paperless/data
       - media:/usr/src/paperless/media
