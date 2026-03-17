@@ -1,0 +1,47 @@
+services:
+  broker:
+    image: redis:7
+    restart: unless-stopped
+
+  db:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: paperless
+      POSTGRES_USER: paperless
+      POSTGRES_PASSWORD: paperless
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  paperless:
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    container_name: paperless
+    restart: unless-stopped
+    depends_on:
+      - db
+      - broker
+    ports:
+      - "8000:8000"
+    environment:
+      PAPERLESS_REDIS: redis://broker:6379
+      PAPERLESS_DBHOST: db
+      PAPERLESS_DBUSER: paperless
+      PAPERLESS_DBPASS: paperless
+      PAPERLESS_DBNAME: paperless
+      PAPERLESS_TIME_ZONE: Europe/Prague
+      PAPERLESS_URL: https://paperless.ssipf-sys.eu
+      PAPERLESS_TRUSTED_PROXIES: 0.0.0.0/0
+      PAPERLESS_CSRF_TRUSTED_ORIGINS: https://paperless.domena.cz/
+      PAPERLESS_ALLOWED_HOSTS: paperless.domena.cz
+    volumes:
+      - data:/usr/src/paperless/data
+      - media:/usr/src/paperless/media
+      - export:/usr/src/paperless/export
+      - consume:/usr/src/paperless/consume
+
+volumes:
+  pgdata:
+  data:
+  media:
+  export:
+  consume:
