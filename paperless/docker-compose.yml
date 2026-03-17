@@ -22,8 +22,7 @@ services:
       - broker
     ports:
       - "8000:8000"
-    environment:
-      PAPERLESS: ahoj
+#    environment:
     env_file:
       - compose.env
     volumes:
@@ -31,6 +30,24 @@ services:
       - media:/usr/src/paperless/media
       - export:/usr/src/paperless/export
       - consume:/usr/src/paperless/consume
+    
+    # --- Traefik (odkomentuj pokud používáš) ---
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.http.routers.paperless.rule=Host(`paperless.example.com`)"
+    #   - "traefik.http.routers.paperless.entrypoints=websecure"
+    #   - "traefik.http.routers.paperless.tls=true"
+    #   - "traefik.http.services.paperless.loadbalancer.server.port=8000"
+
+    # --- NGINX (jen poznámka, ne labels) ---
+    # Použij klasický reverse proxy config:
+    # location / {
+    #     proxy_pass http://paperless:8000;
+    #     proxy_set_header Host $host;
+    #     proxy_set_header X-Real-IP $remote_addr;
+    #     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    #     proxy_set_header X-Forwarded-Proto $scheme;
+    # }
 
 volumes:
   pgdata:
